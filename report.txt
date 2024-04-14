@@ -1,7 +1,0 @@
-Security Audit Tool Report
-==========================
-Status: SuccessWithErrors
-Validation Errors:
-  - Field: CanMembersCreatePublicRepositories 
-    Message: Members should not be allowed to create public repositories.
-
