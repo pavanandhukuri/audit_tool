@@ -1,0 +1,6 @@
+- field: Field1
+  operation: required
+  message: 'Message 1'
+- field: Field2
+  operation: isfalse
+  message: 'Message 2'

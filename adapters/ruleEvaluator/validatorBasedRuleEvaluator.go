@@ -1,4 +1,4 @@
-package validator
+package ruleEvaluator
 
 import (
 	"github.com/go-playground/validator/v10"
@@ -6,17 +6,16 @@ import (
 	"security_audit_tool/domain/entities"
 )
 
-func EvaluateRules(rules []entities.Rule, data interface{}) *entities.ValidationResult {
-	validate, err := GetValidator()
+type ValidatorBasedRuleEvaluator struct {
+	validator *validator.Validate
+}
+
+func (r *ValidatorBasedRuleEvaluator) EvaluateRules(rules []entities.Rule, data interface{}) *entities.ValidationResult {
+
 	validationResult := &entities.ValidationResult{}
 
-	if err != nil {
-		validationResult.Status = entities.Failure
-		return validationResult
-	}
-
 	for _, rule := range rules {
-		evaluateRule(data, rule, validate, validationResult)
+		evaluateRule(data, rule, r.validator, validationResult)
 	}
 
 	if len(validationResult.ValidationErrors) > 0 {
@@ -48,4 +47,12 @@ func getField(data interface{}, rule entities.Rule) reflect.Value {
 	}
 	field := v.FieldByName(rule.Field)
 	return field
+}
+
+func NewValidatorBasedRuleEvaluator() *ValidatorBasedRuleEvaluator {
+	validatorInstance, err := GetValidator()
+	if err != nil {
+		panic(err)
+	}
+	return &ValidatorBasedRuleEvaluator{validatorInstance}
 }

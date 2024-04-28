@@ -12,6 +12,7 @@ func TestAuditorService_Audit(t *testing.T) {
 	versionControlSystemMock := mocks.NewVersionControlSystemPort(t)
 	ruleRepositoryMock := mocks.NewRuleRepository(t)
 	reportGeneratorMock := mocks.NewReportGenerator(t)
+	ruleEvaluatorMock := mocks.NewRuleEvaluatorPort(t)
 
 	t.Run("Should return nil when audit is successful", func(t *testing.T) {
 		// Mocks
@@ -19,11 +20,13 @@ func TestAuditorService_Audit(t *testing.T) {
 		defer getInfoMock.Unset()
 		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]entities.Rule{}, nil)
 		defer getRulesMock.Unset()
+		evaluateMock := ruleEvaluatorMock.On("EvaluateRules", []entities.Rule{}, entities.VersionControlData{}).Return(getMockValidationResult())
+		defer evaluateMock.Unset()
 		generateMock := reportGeneratorMock.On("Generate", getMockValidationResult()).Return(nil)
 		defer generateMock.Unset()
 
 		//Act
-		auditorService := NewVersionControlAuditorService(versionControlSystemMock, ruleRepositoryMock, reportGeneratorMock)
+		auditorService := NewVersionControlAuditorService(versionControlSystemMock, ruleRepositoryMock, reportGeneratorMock, ruleEvaluatorMock)
 		err := auditorService.Audit()
 
 		//Assert
@@ -37,7 +40,7 @@ func TestAuditorService_Audit(t *testing.T) {
 		defer getInfoMock.Unset()
 
 		//Act
-		auditorService := NewVersionControlAuditorService(versionControlSystemMock, ruleRepositoryMock, reportGeneratorMock)
+		auditorService := NewVersionControlAuditorService(versionControlSystemMock, ruleRepositoryMock, reportGeneratorMock, ruleEvaluatorMock)
 		err := auditorService.Audit()
 
 		//Assert
@@ -52,7 +55,7 @@ func TestAuditorService_Audit(t *testing.T) {
 		defer getRulesMock.Unset()
 
 		//Act
-		auditorService := NewVersionControlAuditorService(versionControlSystemMock, ruleRepositoryMock, reportGeneratorMock)
+		auditorService := NewVersionControlAuditorService(versionControlSystemMock, ruleRepositoryMock, reportGeneratorMock, ruleEvaluatorMock)
 		err := auditorService.Audit()
 
 		//Assert
@@ -67,11 +70,13 @@ func TestAuditorService_Audit(t *testing.T) {
 		defer getInfoMock.Unset()
 		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]entities.Rule{}, nil)
 		defer getRulesMock.Unset()
+		evaluateMock := ruleEvaluatorMock.On("EvaluateRules", []entities.Rule{}, entities.VersionControlData{}).Return(getMockValidationResult())
+		defer evaluateMock.Unset()
 		generateMock := reportGeneratorMock.On("Generate", getMockValidationResult()).Return(assert.AnError)
 		defer generateMock.Unset()
 
 		//Act
-		auditorService := NewVersionControlAuditorService(versionControlSystemMock, ruleRepositoryMock, reportGeneratorMock)
+		auditorService := NewVersionControlAuditorService(versionControlSystemMock, ruleRepositoryMock, reportGeneratorMock, ruleEvaluatorMock)
 		err := auditorService.Audit()
 
 		//Assert

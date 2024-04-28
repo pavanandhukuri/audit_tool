@@ -3,13 +3,13 @@ package versionControl
 import (
 	"security_audit_tool/logger"
 	"security_audit_tool/ports"
-	"security_audit_tool/services/core/validator"
 )
 
 type AuditorService struct {
 	versionControlSystemAdapter ports.VersionControlSystemPort
 	ruleRepository              ports.RuleRepository
 	reportGenerator             ports.ReportGenerator
+	ruleEvaluator               ports.RuleEvaluatorPort
 }
 
 func (service *AuditorService) Audit() error {
@@ -25,7 +25,7 @@ func (service *AuditorService) Audit() error {
 		return err
 	}
 
-	validationResult := validator.EvaluateRules(rules, versionControlData)
+	validationResult := service.ruleEvaluator.EvaluateRules(rules, versionControlData)
 	err = service.reportGenerator.Generate(validationResult)
 	if err != nil {
 		return err
@@ -34,6 +34,6 @@ func (service *AuditorService) Audit() error {
 	return nil
 }
 
-func NewVersionControlAuditorService(versionControlSystemAdapter ports.VersionControlSystemPort, ruleRepository ports.RuleRepository, reportGenerator ports.ReportGenerator) *AuditorService {
-	return &AuditorService{versionControlSystemAdapter, ruleRepository, reportGenerator}
+func NewVersionControlAuditorService(versionControlSystemAdapter ports.VersionControlSystemPort, ruleRepository ports.RuleRepository, reportGenerator ports.ReportGenerator, ruleEvaluator ports.RuleEvaluatorPort) *AuditorService {
+	return &AuditorService{versionControlSystemAdapter, ruleRepository, reportGenerator, ruleEvaluator}
 }

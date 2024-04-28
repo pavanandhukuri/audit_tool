@@ -33,6 +33,9 @@ func (r *TextReportGenerator) Generate(result *entities.ValidationResult) error 
 	}
 
 	w.Flush()
+
+	// Print the location of the file
+	fmt.Println("Report generated at: report.txt")
 	return nil
 }
 
