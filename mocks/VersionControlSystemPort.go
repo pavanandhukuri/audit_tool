@@ -14,22 +14,22 @@ type VersionControlSystemPort struct {
 }
 
 // GetInfo provides a mock function with given fields:
-func (_m *VersionControlSystemPort) GetInfo() (entities.VersionControlData, error) {
+func (_m *VersionControlSystemPort) GetData() (entities.VersionControlSystem, error) {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetInfo")
+		panic("no return value specified for GetData")
 	}
 
-	var r0 entities.VersionControlData
+	var r0 entities.VersionControlSystem
 	var r1 error
-	if rf, ok := ret.Get(0).(func() (entities.VersionControlData, error)); ok {
+	if rf, ok := ret.Get(0).(func() (entities.VersionControlSystem, error)); ok {
 		return rf()
 	}
-	if rf, ok := ret.Get(0).(func() entities.VersionControlData); ok {
+	if rf, ok := ret.Get(0).(func() entities.VersionControlSystem); ok {
 		r0 = rf()
 	} else {
-		r0 = ret.Get(0).(entities.VersionControlData)
+		r0 = ret.Get(0).(entities.VersionControlSystem)
 	}
 
 	if rf, ok := ret.Get(1).(func() error); ok {

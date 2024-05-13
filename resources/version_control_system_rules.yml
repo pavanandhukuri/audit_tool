@@ -1,3 +1,10 @@
 - field: CanMembersCreatePublicRepositories
   operation: isfalse
   message: 'Members should not be allowed to create public repositories.'
+- field: Repositories
+  nestedRules:
+    identifiedBy: Name
+    rules:
+      - field: IsPrivate
+        operation: eq=true
+        message: 'Repository should be private'

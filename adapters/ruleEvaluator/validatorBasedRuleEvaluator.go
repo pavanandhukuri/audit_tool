@@ -14,8 +14,10 @@ func (r *ValidatorBasedRuleEvaluator) EvaluateRules(rules []entities.Rule, data 
 
 	validationResult := &entities.ValidationResult{}
 
+	dataAsValue := getValueIfPointer(data)
+
 	for _, rule := range rules {
-		evaluateRule(data, rule, r.validator, validationResult)
+		evaluateRule(dataAsValue, rule, r.validator, validationResult, "")
 	}
 
 	if len(validationResult.ValidationErrors) > 0 {
@@ -27,26 +29,45 @@ func (r *ValidatorBasedRuleEvaluator) EvaluateRules(rules []entities.Rule, data 
 	return validationResult
 }
 
-func evaluateRule(data interface{}, rule entities.Rule, validate *validator.Validate, validationResult *entities.ValidationResult) {
-	field := getField(data, rule)
+func evaluateRule(fieldValue reflect.Value, rule entities.Rule, validate *validator.Validate, validationResult *entities.ValidationResult, messagePrefix string) {
 
-	errs := validate.Var(field.Interface(), rule.Operation)
+	// If there are no nested rules, validate the field
+	if rule.NestedRules.Rules == nil {
+		field := getFieldByFieldName(fieldValue, rule.Field)
+		errs := validate.Var(field.Interface(), rule.Operation)
 
-	if errs != nil {
-		validationResult.ValidationErrors = append(validationResult.ValidationErrors, entities.ValidationError{
-			Field:   rule.Field,
-			Message: rule.Message,
-		})
+		if errs != nil {
+			validationResult.ValidationErrors = append(validationResult.ValidationErrors, entities.ValidationError{
+				Field:   rule.Field,
+				Message: messagePrefix + " " + rule.Message,
+			})
+		}
+	} else {
+		// If there are nested rules, validate the nested rules
+		nestedRules := rule.NestedRules.Rules
+		field := getFieldByFieldName(fieldValue, rule.Field)
+
+		for i := 0; i < field.Len(); i++ {
+			subField := field.Index(i)
+			identifiedBy := getFieldByFieldName(subField, rule.NestedRules.IdentifiedBy)
+			evaluateRule(subField, nestedRules[0], validate, validationResult, rule.Field+"["+identifiedBy.String()+"]")
+		}
+
 	}
+
 }
 
-func getField(data interface{}, rule entities.Rule) reflect.Value {
+func getFieldByFieldName(fieldValue reflect.Value, fieldName string) reflect.Value {
+	field := fieldValue.FieldByName(fieldName)
+	return field
+}
+
+func getValueIfPointer(data interface{}) reflect.Value {
 	v := reflect.ValueOf(data)
 	if kind := v.Kind(); kind == reflect.Ptr {
 		v = v.Elem()
 	}
-	field := v.FieldByName(rule.Field)
-	return field
+	return v
 }
 
 func NewValidatorBasedRuleEvaluator() *ValidatorBasedRuleEvaluator {

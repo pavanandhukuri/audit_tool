@@ -16,11 +16,11 @@ func TestAuditorService_Audit(t *testing.T) {
 
 	t.Run("Should return nil when audit is successful", func(t *testing.T) {
 		// Mocks
-		getInfoMock := versionControlSystemMock.On("GetInfo").Return(entities.VersionControlData{}, nil)
+		getInfoMock := versionControlSystemMock.On("GetData").Return(entities.VersionControlSystem{}, nil)
 		defer getInfoMock.Unset()
 		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]entities.Rule{}, nil)
 		defer getRulesMock.Unset()
-		evaluateMock := ruleEvaluatorMock.On("EvaluateRules", []entities.Rule{}, entities.VersionControlData{}).Return(getMockValidationResult())
+		evaluateMock := ruleEvaluatorMock.On("EvaluateRules", []entities.Rule{}, entities.VersionControlSystem{}).Return(getMockValidationResult())
 		defer evaluateMock.Unset()
 		generateMock := reportGeneratorMock.On("Generate", getMockValidationResult()).Return(nil)
 		defer generateMock.Unset()
@@ -34,9 +34,9 @@ func TestAuditorService_Audit(t *testing.T) {
 		versionControlSystemMock.AssertExpectations(t)
 	})
 
-	t.Run("Should return error when GetInfo fails", func(t *testing.T) {
+	t.Run("Should return error when GetData fails", func(t *testing.T) {
 		// Mocks
-		getInfoMock := versionControlSystemMock.On("GetInfo").Return(entities.VersionControlData{}, assert.AnError)
+		getInfoMock := versionControlSystemMock.On("GetData").Return(entities.VersionControlSystem{}, assert.AnError)
 		defer getInfoMock.Unset()
 
 		//Act
@@ -49,7 +49,7 @@ func TestAuditorService_Audit(t *testing.T) {
 	})
 	t.Run("Should return error when GetRules fails", func(t *testing.T) {
 		// Mocks
-		getInfoMock := versionControlSystemMock.On("GetInfo").Return(entities.VersionControlData{}, nil)
+		getInfoMock := versionControlSystemMock.On("GetData").Return(entities.VersionControlSystem{}, nil)
 		defer getInfoMock.Unset()
 		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]entities.Rule{}, assert.AnError)
 		defer getRulesMock.Unset()
@@ -66,11 +66,11 @@ func TestAuditorService_Audit(t *testing.T) {
 
 	t.Run("Should return error when Generate fails", func(t *testing.T) {
 		// Mocks
-		getInfoMock := versionControlSystemMock.On("GetInfo").Return(entities.VersionControlData{}, nil)
+		getInfoMock := versionControlSystemMock.On("GetData").Return(entities.VersionControlSystem{}, nil)
 		defer getInfoMock.Unset()
 		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]entities.Rule{}, nil)
 		defer getRulesMock.Unset()
-		evaluateMock := ruleEvaluatorMock.On("EvaluateRules", []entities.Rule{}, entities.VersionControlData{}).Return(getMockValidationResult())
+		evaluateMock := ruleEvaluatorMock.On("EvaluateRules", []entities.Rule{}, entities.VersionControlSystem{}).Return(getMockValidationResult())
 		defer evaluateMock.Unset()
 		generateMock := reportGeneratorMock.On("Generate", getMockValidationResult()).Return(assert.AnError)
 		defer generateMock.Unset()

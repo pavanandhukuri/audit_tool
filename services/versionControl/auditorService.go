@@ -13,7 +13,7 @@ type AuditorService struct {
 }
 
 func (service *AuditorService) Audit() error {
-	versionControlData, err := service.versionControlSystemAdapter.GetInfo()
+	versionControlData, err := service.versionControlSystemAdapter.GetData()
 	if err != nil {
 		logger.LogError("Error getting version control data")
 		return err
