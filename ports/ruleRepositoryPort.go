@@ -1,7 +1,9 @@
 package ports
 
-import "security_audit_tool/domain/entities"
+import (
+	"security_audit_tool/domain/entities/core"
+)
 
 type RuleRepository interface {
-	GetRules() ([]entities.Rule, error)
+	GetRules() ([]core.Rule, error)
 }

@@ -4,15 +4,20 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"security_audit_tool/domain/entities"
+	"security_audit_tool/domain/entities/core"
+	"time"
 )
 
 type TextReportGenerator struct {
 }
 
-func (r *TextReportGenerator) Generate(result *entities.ValidationResult) error {
+func (r *TextReportGenerator) Generate(result *core.ValidationResult) error {
 
-	f, err := os.Create("report.txt")
+	// Create a new file with current timestamp suffix in file name
+	fileName := fmt.Sprintf("report-%d.txt", time.Now().Unix())
+
+	f, err := os.Create(fileName)
+
 	if err != nil {
 		return err
 	}
@@ -28,7 +33,7 @@ func (r *TextReportGenerator) Generate(result *entities.ValidationResult) error 
 	if len(result.ValidationErrors) > 0 {
 		fmt.Fprintf(w, "Validation Errors:\n")
 		for _, err := range result.ValidationErrors {
-			fmt.Fprintf(w, "  - Field: %s \n    Message: %s\n\n", err.Field, err.Message)
+			fmt.Fprintf(w, "  - Field: %s \n    Message: %s\n    CurrentValue: %s\n\n", err.Field, err.Message, err.CurrentValue)
 		}
 	}
 

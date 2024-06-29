@@ -25,6 +25,8 @@ func GetAsType[T any](url string, headers map[string]string) (T, error) {
 }
 
 func makeGetCall(url string, headers map[string]string) ([]byte, error) {
+	fmt.Println("Making GET call to:", url)
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		fmt.Println("Error creating request:", err)

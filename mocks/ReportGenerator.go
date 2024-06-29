@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	entities "security_audit_tool/domain/entities"
+	entities "security_audit_tool/domain/entities/core"
 
 	mock "github.com/stretchr/testify/mock"
 )

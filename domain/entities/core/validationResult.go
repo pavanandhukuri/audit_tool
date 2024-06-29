@@ -1,4 +1,4 @@
-package entities
+package core
 
 type Status string
 
@@ -9,8 +9,9 @@ const (
 )
 
 type ValidationError struct {
-	Field   string
-	Message string
+	Field        string
+	Message      string
+	CurrentValue interface{}
 }
 type ValidationResult struct {
 	Status           Status

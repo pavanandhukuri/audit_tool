@@ -1,0 +1,50 @@
+schema:
+  CanMembersCreatePublicRepositories:
+    type: boolean
+    value: orgInfo.members_can_create_repositories
+  Repositories:
+    type: array
+    value: repositories
+    fields:
+      Name:
+        type: string
+        value: item.full_name
+      IsPrivate:
+        type: boolean
+        value: item.private
+      DefaultWorkflowPermission:
+        type: string
+        value: workflowPermission.default_workflow_permissions
+      AccessLevel:
+        type: string
+        value: accessLevel.access_level
+
+endpoints:
+  orgInfo:
+    url: https://api.github.com/orgs/{{env.GITHUB_ORG_NAME}}
+    method: GET
+    headers:
+      Accept: application/vnd.github+json
+      Authorization: Bearer {{env.GITHUB_PERSONAL_ACCESS_TOKEN}}
+      X-GitHub-Api-Version: 2022-11-28
+  repositories:
+    url: https://api.github.com/orgs/{{env.GITHUB_ORG_NAME}}/repos
+    method: GET
+    headers:
+      Accept: application/vnd.github+json
+      Authorization: Bearer {{env.GITHUB_PERSONAL_ACCESS_TOKEN}}
+      X-GitHub-Api-Version: 2022-11-28
+  workflowPermission:
+    url: https://api.github.com/repos/{{item.full_name}}/actions/permissions/workflow
+    method: GET
+    headers:
+      Accept: application/vnd.github+json
+      Authorization: Bearer {{env.GITHUB_PERSONAL_ACCESS_TOKEN}}
+      X-GitHub-Api-Version: 2022-11-28
+  accessLevel:
+    url: https://api.github.com/repos/{{env.GITHUB_ORG_NAME}}/{{item.full_name}}/actions/permissions/access
+    method: GET
+    headers:
+      Accept: application/vnd.github+json
+      Authorization: Bearer
+      X-GitHub-Api-Version: 2022-11-28

@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	entities "security_audit_tool/domain/entities"
+	"security_audit_tool/domain/entities/core"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -14,19 +14,19 @@ type RuleEvaluatorPort struct {
 }
 
 // EvaluateRules provides a mock function with given fields: rules, data
-func (_m *RuleEvaluatorPort) EvaluateRules(rules []entities.Rule, data interface{}) *entities.ValidationResult {
+func (_m *RuleEvaluatorPort) EvaluateRules(rules []core.Rule, data interface{}) *core.ValidationResult {
 	ret := _m.Called(rules, data)
 
 	if len(ret) == 0 {
 		panic("no return value specified for EvaluateRules")
 	}
 
-	var r0 *entities.ValidationResult
-	if rf, ok := ret.Get(0).(func([]entities.Rule, interface{}) *entities.ValidationResult); ok {
+	var r0 *core.ValidationResult
+	if rf, ok := ret.Get(0).(func([]core.Rule, interface{}) *core.ValidationResult); ok {
 		r0 = rf(rules, data)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entities.ValidationResult)
+			r0 = ret.Get(0).(*core.ValidationResult)
 		}
 	}
 

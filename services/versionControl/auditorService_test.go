@@ -3,6 +3,7 @@ package versionControl
 import (
 	"github.com/stretchr/testify/assert"
 	"security_audit_tool/domain/entities"
+	"security_audit_tool/domain/entities/core"
 	"security_audit_tool/mocks"
 	"testing"
 )
@@ -18,9 +19,9 @@ func TestAuditorService_Audit(t *testing.T) {
 		// Mocks
 		getInfoMock := versionControlSystemMock.On("GetData").Return(entities.VersionControlSystem{}, nil)
 		defer getInfoMock.Unset()
-		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]entities.Rule{}, nil)
+		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]core.Rule{}, nil)
 		defer getRulesMock.Unset()
-		evaluateMock := ruleEvaluatorMock.On("EvaluateRules", []entities.Rule{}, entities.VersionControlSystem{}).Return(getMockValidationResult())
+		evaluateMock := ruleEvaluatorMock.On("EvaluateRules", []core.Rule{}, entities.VersionControlSystem{}).Return(getMockValidationResult())
 		defer evaluateMock.Unset()
 		generateMock := reportGeneratorMock.On("Generate", getMockValidationResult()).Return(nil)
 		defer generateMock.Unset()
@@ -51,7 +52,7 @@ func TestAuditorService_Audit(t *testing.T) {
 		// Mocks
 		getInfoMock := versionControlSystemMock.On("GetData").Return(entities.VersionControlSystem{}, nil)
 		defer getInfoMock.Unset()
-		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]entities.Rule{}, assert.AnError)
+		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]core.Rule{}, assert.AnError)
 		defer getRulesMock.Unset()
 
 		//Act
@@ -68,9 +69,9 @@ func TestAuditorService_Audit(t *testing.T) {
 		// Mocks
 		getInfoMock := versionControlSystemMock.On("GetData").Return(entities.VersionControlSystem{}, nil)
 		defer getInfoMock.Unset()
-		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]entities.Rule{}, nil)
+		getRulesMock := ruleRepositoryMock.On("GetRules").Return([]core.Rule{}, nil)
 		defer getRulesMock.Unset()
-		evaluateMock := ruleEvaluatorMock.On("EvaluateRules", []entities.Rule{}, entities.VersionControlSystem{}).Return(getMockValidationResult())
+		evaluateMock := ruleEvaluatorMock.On("EvaluateRules", []core.Rule{}, entities.VersionControlSystem{}).Return(getMockValidationResult())
 		defer evaluateMock.Unset()
 		generateMock := reportGeneratorMock.On("Generate", getMockValidationResult()).Return(assert.AnError)
 		defer generateMock.Unset()
@@ -85,9 +86,9 @@ func TestAuditorService_Audit(t *testing.T) {
 
 }
 
-func getMockValidationResult() *entities.ValidationResult {
-	return &entities.ValidationResult{
-		Status:           entities.Success,
+func getMockValidationResult() *core.ValidationResult {
+	return &core.ValidationResult{
+		Status:           core.Success,
 		ValidationErrors: nil,
 	}
 }

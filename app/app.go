@@ -6,21 +6,18 @@ import (
 	"security_audit_tool/adapters/ruleEvaluator"
 	"security_audit_tool/adapters/vcs/github"
 	"security_audit_tool/logger"
-	"security_audit_tool/services/config"
 	"security_audit_tool/services/versionControl"
 )
 
 func Run() {
 	logger.LogInfo("Starting...")
 
-	configuration, _ := config.Load()
-
-	githubAdapter := github.NewGithubVersionControlSystemAdapter(*configuration)
+	githubAdapter := github.NewGithubVcsAdapter()
 	currentWorkingDirectory, _ := os.Getwd()
 	ruleRepository := adapters.NewYamlBasedRuleRepository(currentWorkingDirectory + "/resources/version_control_system_rules.yml")
 	reportGenerator := adapters.NewTextReportGenerator()
-	ruleEvaluator := ruleEvaluator.NewValidatorBasedRuleEvaluator()
-	versionControlAuditorService := versionControl.NewVersionControlAuditorService(githubAdapter, ruleRepository, reportGenerator, ruleEvaluator)
+	evaluator := ruleEvaluator.NewValidatorBasedRuleEvaluator()
+	versionControlAuditorService := versionControl.NewVersionControlAuditorService(githubAdapter, ruleRepository, reportGenerator, evaluator)
 	err := versionControlAuditorService.Audit()
 	if err != nil {
 		logger.LogError("Error auditing version control system" + err.Error())

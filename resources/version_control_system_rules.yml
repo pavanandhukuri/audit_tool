@@ -8,3 +8,9 @@
       - field: IsPrivate
         operation: eq=true
         message: 'Repository should be private'
+      - field: DefaultWorkflowPermission
+        operation: eq=read
+        message: 'Default workflow permissions should be read'
+      - field: AccessLevel
+        operation: eq=organization
+        message: 'Access level should be organization'
