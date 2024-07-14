@@ -1,6 +1,7 @@
 package ruleEvaluator
 
 import (
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"security_audit_tool/domain/entities/core"
 )
@@ -31,6 +32,8 @@ func evaluateRule(data map[string]interface{}, rule core.Rule, validate *validat
 	// If there are no nested rules, validate the field
 	if rule.NestedRules.Rules == nil {
 		field := data[rule.Field]
+		// Log field to be validated
+		fmt.Println("Validating field: ", rule.Field)
 		errs := validate.Var(field, rule.Operation)
 
 		if errs != nil {

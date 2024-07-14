@@ -14,3 +14,19 @@
       - field: AccessLevel
         operation: eq=organization
         message: 'Access level should be organization'
+      - field: SecretScanningAndPushProtection
+        operation: eq=enabled
+        message: 'Secret scanning and push protection should be enabled'
+      - field: PrivateVulnerabilityReporting
+        operation: eq=true
+        message: 'Private vulnerability reporting should be enabled'
+      - field: InteractionLimit
+        operation: eq=collaborators_only
+        message: 'Interaction limit should be set to collaborators only'
+- field: Users
+  nestedRules:
+    identifiedBy: Login
+    rules:
+      - field: TwoFactorAuthentication
+        operation: eq=true
+        message: 'Two factor authentication should be enabled'
