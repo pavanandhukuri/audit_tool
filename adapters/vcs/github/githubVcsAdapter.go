@@ -65,11 +65,12 @@ func (e *EndpointData) Get() interface{} {
 }
 
 type VcsAdapter struct {
-	EndpointData map[string]EndpointData
+	EndpointData         map[string]EndpointData
+	SchemaConfigFilepath string
 }
 
 func (adapter *VcsAdapter) GetData() (map[string]interface{}, error) {
-	config := getConfig()
+	config := getConfig(adapter.SchemaConfigFilepath)
 	finalObj := make(map[string]interface{})
 
 	for key, value := range config.Schema {
@@ -117,14 +118,14 @@ func (adapter *VcsAdapter) handleSingleType(value SchemaField, config Configurat
 	if valuePrefix == "item" {
 		data = context
 	} else {
-		data = adapter.getCachedData(config, valuePrefix, context)
+		data = adapter.getCachedOrFetchData(config, valuePrefix, context)
 	}
 
 	valueData := getValueFromData(value.Value, data)
 	schemaObj[key] = valueData
 }
 
-func (adapter *VcsAdapter) getCachedData(config Configuration, valuePrefix string, context interface{}) interface{} {
+func (adapter *VcsAdapter) getCachedOrFetchData(config Configuration, valuePrefix string, context interface{}) interface{} {
 	contextKey, _ := serializeContext(context)
 	cachedData, exists := adapter.EndpointData[valuePrefix]
 
@@ -201,9 +202,8 @@ func prepareHeaders(headers map[string]string, context interface{}) map[string]s
 	return interpolatedHeaders
 }
 
-func getConfig() Configuration {
-	currentWorkingDirectory, _ := os.Getwd()
-	yamlFile, err := os.ReadFile(currentWorkingDirectory + "/resources/config.yml")
+func getConfig(schemaConfigFilePath string) Configuration {
+	yamlFile, err := os.ReadFile(schemaConfigFilePath)
 	if err != nil {
 		panic(err)
 	}
@@ -250,6 +250,6 @@ func interpolateEnvVariables(input string) string {
 	})
 }
 
-func NewGithubVcsAdapter() *VcsAdapter {
-	return &VcsAdapter{EndpointData: make(map[string]EndpointData)}
+func NewGithubVcsAdapter(schemConfigFilePath string) *VcsAdapter {
+	return &VcsAdapter{EndpointData: make(map[string]EndpointData), SchemaConfigFilepath: schemConfigFilePath}
 }

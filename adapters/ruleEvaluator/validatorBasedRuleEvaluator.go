@@ -3,31 +3,31 @@ package ruleEvaluator
 import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
-	"security_audit_tool/domain/entities/core"
+	"security_audit_tool/domain/entities"
 )
 
 type ValidatorBasedRuleEvaluator struct {
 	validator *validator.Validate
 }
 
-func (r *ValidatorBasedRuleEvaluator) EvaluateRules(rules []core.Rule, data map[string]interface{}) *core.ValidationResult {
+func (r *ValidatorBasedRuleEvaluator) EvaluateRules(rules []entities.Rule, data map[string]interface{}) (*entities.ValidationResult, error) {
 
-	validationResult := &core.ValidationResult{}
+	validationResult := &entities.ValidationResult{}
 
 	for _, rule := range rules {
 		evaluateRule(data, rule, r.validator, validationResult, "")
 	}
 
 	if len(validationResult.ValidationErrors) > 0 {
-		validationResult.Status = core.SuccessWithErrors
+		validationResult.Status = entities.SuccessWithErrors
 	} else {
-		validationResult.Status = core.Success
+		validationResult.Status = entities.Success
 	}
 
-	return validationResult
+	return validationResult, nil
 }
 
-func evaluateRule(data map[string]interface{}, rule core.Rule, validate *validator.Validate, validationResult *core.ValidationResult, messagePrefix string) {
+func evaluateRule(data map[string]interface{}, rule entities.Rule, validate *validator.Validate, validationResult *entities.ValidationResult, messagePrefix string) {
 
 	// If there are no nested rules, validate the field
 	if rule.NestedRules.Rules == nil {
@@ -37,7 +37,7 @@ func evaluateRule(data map[string]interface{}, rule core.Rule, validate *validat
 		errs := validate.Var(field, rule.Operation)
 
 		if errs != nil {
-			validationResult.ValidationErrors = append(validationResult.ValidationErrors, core.ValidationError{
+			validationResult.ValidationErrors = append(validationResult.ValidationErrors, entities.ValidationError{
 				Field:        rule.Field,
 				Message:      messagePrefix + " " + rule.Message,
 				CurrentValue: field,

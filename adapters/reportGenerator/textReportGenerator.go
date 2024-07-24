@@ -1,17 +1,17 @@
-package adapters
+package reportGenerator
 
 import (
 	"bufio"
 	"fmt"
 	"os"
-	"security_audit_tool/domain/entities/core"
+	"security_audit_tool/domain/entities"
 	"time"
 )
 
 type TextReportGenerator struct {
 }
 
-func (r *TextReportGenerator) Generate(result *core.ValidationResult) error {
+func (r *TextReportGenerator) Generate(result *entities.ValidationResult) error {
 
 	// Create a new file with current timestamp suffix in file name
 	fileName := fmt.Sprintf("report-%d.txt", time.Now().Unix())

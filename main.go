@@ -6,9 +6,13 @@ import (
 )
 
 func main() {
+	loadConfig()
+	app.Run()
+}
+
+func loadConfig() {
 	_, err := config.Load()
 	if err != nil {
-		return
+		panic(err)
 	}
-	app.Run()
 }

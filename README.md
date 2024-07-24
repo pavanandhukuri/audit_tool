@@ -1,11 +1,25 @@
 # Security Audit Tool
 
-A simple rule evaluator tool that can be used to evaluate security settings. At the moment, the tool supports evaluating
-github repository configuraiton. But it can be extended to support more.
+A simple rule evaluator tool that can be used to audit the configuration of a GitHub organisation. The tool is designed
+to be extensible and can be easily extended to add more rules.
+
+## Configuration
+
+The tool is configured using two files:
+
+* `resources/schema_config.yml`: This file contains the schema definition for the data model to be created based by
+  calling different endpoints of GitHub. The schema is defined in YAML format.
+* `resources/version_control_system_rules.yml`: This file contains the rules that need to be evaluated. The rule
+  operations are inherited from https://github.com/go-playground/validator. Custom validators are defined
+  in `adapters/ruleEvaluator/customValidators.go` and linked in `adapters/ruleEvaluator/validatorService.go`.
+
+New rules can be added by adding them to the `resources/version_control_system_rules.yml` file. If they require a
+modification to the schema, it needs to be first updated in the `resources/schema_config.yml` file.
 
 ## Usage
 
-Create a copy of `.env.example` and rename it to `.env`. Fill in the required values. Alternatively, environment
+**Step 1:** Create a copy of `.env.example` and rename it to `.env`. Fill in the required values. Alternatively,
+environment
 variables can be set.
 
 ```bash
@@ -18,14 +32,6 @@ Run the tool using the following command:
 ```bash
 go run main.go
 ```
-
-## Extending the tool
-
-`VersionControlData` entity present in `domain/entities/versionControl.go` shows what properties are supported by the
-tool as of now. https://github.com/go-playground/validator is used to run rules against the data represented by that
-entity. Additional properties can be added by adding the relevant fetching code to the adapters
-implementing `VersionControlPort`. Rules can then be added to `resources/version_control_system_rues.yml` to be
-evaluated.
 
 ## Testing
 

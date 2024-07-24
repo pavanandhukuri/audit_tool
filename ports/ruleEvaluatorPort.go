@@ -1,9 +1,9 @@
 package ports
 
 import (
-	"security_audit_tool/domain/entities/core"
+	"security_audit_tool/domain/entities"
 )
 
 type RuleEvaluatorPort interface {
-	EvaluateRules(rules []core.Rule, data map[string]interface{}) *core.ValidationResult
+	EvaluateRules(rules []entities.Rule, data map[string]interface{}) (*entities.ValidationResult, error)
 }

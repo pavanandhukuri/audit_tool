@@ -1,9 +1,9 @@
-package adapters
+package ruleRepository
 
 import (
 	"gopkg.in/yaml.v3"
 	"os"
-	"security_audit_tool/domain/entities/core"
+	"security_audit_tool/domain/entities"
 	"security_audit_tool/logger"
 )
 
@@ -23,7 +23,7 @@ type YamlBasedRuleRepository struct {
 	ruleFilePath string
 }
 
-func (r *YamlBasedRuleRepository) GetRules() ([]core.Rule, error) {
+func (r *YamlBasedRuleRepository) GetRules() ([]entities.Rule, error) {
 	rulesYaml, err := os.ReadFile(r.ruleFilePath)
 	if err != nil {
 		logger.LogError("Error reading rules file")
@@ -37,7 +37,7 @@ func (r *YamlBasedRuleRepository) GetRules() ([]core.Rule, error) {
 		return nil, err
 	}
 
-	var rules []core.Rule
+	var rules []entities.Rule
 
 	for _, yamlBasedRule := range yamlBasedRules {
 		rules = append(rules, yamlBasedRule.toRule())
@@ -46,9 +46,9 @@ func (r *YamlBasedRuleRepository) GetRules() ([]core.Rule, error) {
 	return rules, nil
 }
 
-func (yamlBasedRule *YamlBasedRule) toRule() core.Rule {
+func (yamlBasedRule *YamlBasedRule) toRule() entities.Rule {
 
-	rule := core.Rule{
+	rule := entities.Rule{
 		Field:     yamlBasedRule.Field,
 		Operation: yamlBasedRule.Operation,
 		Message:   yamlBasedRule.Message,
@@ -56,12 +56,12 @@ func (yamlBasedRule *YamlBasedRule) toRule() core.Rule {
 
 	// If there are nested rules, convert them to entities.Rule
 	if yamlBasedRule.NestedRules.Rules != nil {
-		var nestedRules []core.Rule
+		var nestedRules []entities.Rule
 
 		for _, yamlBasedRule := range yamlBasedRule.NestedRules.Rules {
 			nestedRules = append(nestedRules, yamlBasedRule.toRule())
 		}
-		rule.NestedRules = core.NestedRule{
+		rule.NestedRules = entities.NestedRule{
 			IdentifiedBy: yamlBasedRule.NestedRules.IdentifiedBy,
 			Rules:        nestedRules,
 		}

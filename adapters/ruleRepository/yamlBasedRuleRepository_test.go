@@ -1,4 +1,4 @@
-package adapters
+package ruleRepository
 
 import (
 	"github.com/stretchr/testify/assert"

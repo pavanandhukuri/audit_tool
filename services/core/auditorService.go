@@ -1,4 +1,4 @@
-package versionControl
+package core
 
 import (
 	"security_audit_tool/logger"
@@ -25,9 +25,15 @@ func (service *AuditorService) Audit() error {
 		return err
 	}
 
-	validationResult := service.ruleEvaluator.EvaluateRules(rules, versionControlData)
+	validationResult, err := service.ruleEvaluator.EvaluateRules(rules, versionControlData)
+	if err != nil {
+		logger.LogError("Unable to evaluate rules")
+		return err
+	}
+
 	err = service.reportGenerator.Generate(validationResult)
 	if err != nil {
+		logger.LogError("Unable to generate report")
 		return err
 	}
 

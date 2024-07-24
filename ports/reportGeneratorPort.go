@@ -1,9 +1,9 @@
 package ports
 
 import (
-	"security_audit_tool/domain/entities/core"
+	"security_audit_tool/domain/entities"
 )
 
 type ReportGenerator interface {
-	Generate(result *core.ValidationResult) error
+	Generate(result *entities.ValidationResult) error
 }

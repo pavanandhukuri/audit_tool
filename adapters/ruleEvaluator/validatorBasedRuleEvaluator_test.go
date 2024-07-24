@@ -2,7 +2,7 @@ package ruleEvaluator
 
 import (
 	"github.com/stretchr/testify/assert"
-	"security_audit_tool/domain/entities/core"
+	"security_audit_tool/domain/entities"
 	"testing"
 )
 
@@ -10,7 +10,7 @@ func TestValidatorBasedRuleEvaluator_EvaluateRules(t *testing.T) {
 	t.Run("Should return success when there are no validation errors", func(t *testing.T) {
 		//Arrange
 		ruleEvaluator := NewValidatorBasedRuleEvaluator()
-		rules := []core.Rule{
+		rules := []entities.Rule{
 			{
 				Field:     "CanMembersCreatePublicRepositories",
 				Operation: "isfalse",
@@ -25,13 +25,13 @@ func TestValidatorBasedRuleEvaluator_EvaluateRules(t *testing.T) {
 		result := ruleEvaluator.EvaluateRules(rules, data)
 
 		//Assert
-		assert.Equal(t, core.Success, result.Status)
+		assert.Equal(t, entities.Success, result.Status)
 	})
 
 	t.Run("Should return success with errors when there are validation errors", func(t *testing.T) {
 		//Arrange
 		ruleEvaluator := NewValidatorBasedRuleEvaluator()
-		rules := []core.Rule{
+		rules := []entities.Rule{
 			{
 				Field:     "CanMembersCreatePublicRepositories",
 				Operation: "isfalse",
@@ -46,7 +46,7 @@ func TestValidatorBasedRuleEvaluator_EvaluateRules(t *testing.T) {
 		result := ruleEvaluator.EvaluateRules(rules, data)
 
 		//Assert
-		assert.Equal(t, core.SuccessWithErrors, result.Status)
+		assert.Equal(t, entities.SuccessWithErrors, result.Status)
 		assert.Equal(t, 1, len(result.ValidationErrors))
 		assert.Equal(t, "CanMembersCreatePublicRepositories should be false", result.ValidationErrors[0].Message)
 	})
@@ -54,7 +54,7 @@ func TestValidatorBasedRuleEvaluator_EvaluateRules(t *testing.T) {
 	t.Run("Should return success for default validator tests", func(t *testing.T) {
 		//Arrange
 		ruleEvaluator := NewValidatorBasedRuleEvaluator()
-		rules := []core.Rule{
+		rules := []entities.Rule{
 			{
 				Field:     "RequiredField",
 				Operation: "required",
@@ -69,13 +69,13 @@ func TestValidatorBasedRuleEvaluator_EvaluateRules(t *testing.T) {
 		result := ruleEvaluator.EvaluateRules(rules, data)
 
 		//Assert
-		assert.Equal(t, core.Success, result.Status)
+		assert.Equal(t, entities.Success, result.Status)
 	})
 
 	t.Run("Should return success with errors for default validator tests", func(t *testing.T) {
 		//Arrange
 		ruleEvaluator := NewValidatorBasedRuleEvaluator()
-		rules := []core.Rule{
+		rules := []entities.Rule{
 			{
 				Field:     "RequiredField",
 				Operation: "required",
@@ -90,7 +90,7 @@ func TestValidatorBasedRuleEvaluator_EvaluateRules(t *testing.T) {
 		result := ruleEvaluator.EvaluateRules(rules, data)
 
 		//Assert
-		assert.Equal(t, core.SuccessWithErrors, result.Status)
+		assert.Equal(t, entities.SuccessWithErrors, result.Status)
 		assert.Equal(t, 1, len(result.ValidationErrors))
 		assert.Equal(t, "RequiredField is required", result.ValidationErrors[0].Message)
 	})
