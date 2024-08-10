@@ -11,7 +11,7 @@ import (
 type TextReportGenerator struct {
 }
 
-func (r *TextReportGenerator) Generate(result *entities.ValidationResult) error {
+func (r *TextReportGenerator) Generate(result *entities.ValidationResult) (string, error) {
 
 	// Create a new file with current timestamp suffix in file name
 	fileName := fmt.Sprintf("report-%d.txt", time.Now().Unix())
@@ -19,29 +19,45 @@ func (r *TextReportGenerator) Generate(result *entities.ValidationResult) error 
 	f, err := os.Create(fileName)
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	defer f.Close()
 
 	w := bufio.NewWriter(f)
 
-	fmt.Fprintf(w, "Security Audit Tool Report\n")
-	fmt.Fprintf(w, "==========================\n")
-	fmt.Fprintf(w, "Status: %s\n", result.Status)
+	_, err = fmt.Fprintf(w, "Security Audit Tool Report\n")
+	if err != nil {
+		return "", err
+	}
+	_, err = fmt.Fprintf(w, "==========================\n")
+	if err != nil {
+		return "", err
+	}
+	_, err = fmt.Fprintf(w, "Status: %s\n", result.Status)
+	if err != nil {
+		return "", err
+	}
 
 	if len(result.ValidationErrors) > 0 {
-		fmt.Fprintf(w, "Validation Errors:\n")
+		_, err := fmt.Fprintf(w, "Validation Errors:\n")
+		if err != nil {
+			return "", err
+		}
 		for _, err := range result.ValidationErrors {
-			fmt.Fprintf(w, "  - Field: %s \n    Message: %s\n    CurrentValue: %s\n\n", err.Field, err.Message, err.CurrentValue)
+			_, err := fmt.Fprintf(w, "  - Field: %s \n    Message: %s\n    CurrentValue: %s\n\n", err.Field, err.Message, err.CurrentValue)
+			if err != nil {
+				return "", err
+			}
 		}
 	}
 
-	w.Flush()
+	err = w.Flush()
+	if err != nil {
+		return "", err
+	}
 
-	// Print the location of the file
-	fmt.Printf("Report generated at: %s\n", fileName)
-	return nil
+	return fileName, nil
 }
 
 func NewTextReportGenerator() *TextReportGenerator {

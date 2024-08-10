@@ -15,7 +15,7 @@ func Run() {
 
 	githubAdapter, ruleRepository, reportGenerator, evaluator := createAdapters()
 
-	versionControlAuditorService := core.NewVersionControlAuditorService(githubAdapter, ruleRepository, reportGenerator, evaluator)
+	versionControlAuditorService := core.NewVersionControlAuditorService(githubAdapter, ruleRepository, evaluator, reportGenerator)
 	err := versionControlAuditorService.Audit()
 	if err != nil {
 		logger.LogError("Error auditing version control system" + err.Error())

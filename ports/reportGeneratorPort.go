@@ -5,5 +5,5 @@ import (
 )
 
 type ReportGenerator interface {
-	Generate(result *entities.ValidationResult) error
+	Generate(result *entities.ValidationResult) (string, error)
 }

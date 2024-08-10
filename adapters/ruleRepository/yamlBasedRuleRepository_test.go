@@ -8,7 +8,7 @@ import (
 func TestYamlBasedRuleRepository_GetRules(t *testing.T) {
 	t.Run("Should return rules when rules file is valid", func(t *testing.T) {
 		//Arrange
-		ruleRepository := NewYamlBasedRuleRepository("../../test/rules.yaml")
+		ruleRepository := NewYamlBasedRuleRepository("../../test/rules.yml")
 
 		//Act
 		rules, err := ruleRepository.GetRules()

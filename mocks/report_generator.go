@@ -14,21 +14,31 @@ type ReportGenerator struct {
 }
 
 // Generate provides a mock function with given fields: result
-func (_m *ReportGenerator) Generate(result *entities.ValidationResult) error {
+func (_m *ReportGenerator) Generate(result *entities.ValidationResult) (string, error) {
 	ret := _m.Called(result)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Generate")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*entities.ValidationResult) error); ok {
+	var r0 string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*entities.ValidationResult) (string, error)); ok {
+		return rf(result)
+	}
+	if rf, ok := ret.Get(0).(func(*entities.ValidationResult) string); ok {
 		r0 = rf(result)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(string)
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(*entities.ValidationResult) error); ok {
+		r1 = rf(result)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // NewReportGenerator creates a new instance of ReportGenerator. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
