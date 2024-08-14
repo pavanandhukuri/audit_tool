@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"security_audit_tool/domain/entities"
+	"strings"
 )
 
 type ValidatorBasedRuleEvaluator struct {
@@ -39,7 +40,7 @@ func evaluateRule(data map[string]interface{}, rule entities.Rule, validate *val
 		if errs != nil {
 			validationResult.ValidationErrors = append(validationResult.ValidationErrors, entities.ValidationError{
 				Field:        rule.Field,
-				Message:      messagePrefix + " " + rule.Message,
+				Message:      strings.TrimSpace(messagePrefix + " " + rule.Message),
 				CurrentValue: field,
 			})
 		}
